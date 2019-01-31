@@ -1,232 +1,314 @@
+//left
+//M1
+int enA = 6;
+int in1 = 22;
+int in2 = 23;
+
+//M2
+int enB = 7;
+int in3 = 25;
+int in4 = 24;
+
+//right
+//M3
+int enC = 4;
+int in5 = 27;
+int in6 = 26;
+
+//M4
+int enD = 5;
+int in7 = 29;
+int in8 = 28;
 
 
-void forwardleft(int speed){
+
+int L7 = A3;
+int L6 = A5;
+int L5 = A7;
+int L4 = A9;
+int L3 = A11;
+int L2 = A13;
+int L1 = A15;
+
+int error;
+int while_error;
+int last_error;
+
+int turn_error;
+int last_turn_error;
+
+int integral;
+int derivative;
 
 
-pinMode(5,OUTPUT);
-pinMode(6,OUTPUT);
-pinMode(22,OUTPUT);
-pinMode(23,OUTPUT);
-pinMode(24,OUTPUT);
-pinMode(25,OUTPUT);
+int Kp = 25;
+int Kd = 0;
+int Ki = 0;
 
 
-//YELLOW LEFT
-analogWrite(5,speed);
-analogWrite(6,speed);
-  
-  //front left motors for frwD  (HLHL)BLACK
-digitalWrite(22,HIGH);
-digitalWrite(23,LOW);
+int ref_speed = 200;
+int offset_speed;
 
-//rear left motors for frwD  (HLHL) GREY
-digitalWrite(24,HIGH);
-digitalWrite(25,LOW);
+int max_speed;
+int min_speed;
 
+int left_speed;
+int right_speed;
 
-  
-}
-void backwardleft(int speed){
-
-
-pinMode(5,OUTPUT);
-pinMode(6,OUTPUT);
-pinMode(22,OUTPUT);
-pinMode(23,OUTPUT);
-pinMode(24,OUTPUT);
-pinMode(25,OUTPUT);
-
-
-//YELLOW LEFT
-analogWrite(5,speed);
-analogWrite(6,speed);
-  
-  //front left motors for frwD  (HLHL)BLACK
-digitalWrite(22,LOW);
-digitalWrite(23,HIGH);
-
-//rear left motors for frwD  (HLHL) GREY
-digitalWrite(24,LOW);
-digitalWrite(25,HIGH);
-
-
-  
-}
-void forwardright(int speed){
-pinMode(3,OUTPUT);
-pinMode(4,OUTPUT);
-pinMode(10,OUTPUT);
-pinMode(11,OUTPUT);
-pinMode(12,OUTPUT);
-pinMode(13,OUTPUT);
-
-
-//WHITE RIGHT
-analogWrite(3,speed);
-analogWrite(4,speed);
-
-
-//front right motors for frwD  (HLHL)VIOLET
-digitalWrite(10,HIGH);
-digitalWrite(11,LOW);
-//rear right mtors for frwD  (HLHL) BLUE
-digitalWrite(12,HIGH);
-digitalWrite(13,LOW);
-  
-}
-void backwardright(int speed){
-pinMode(3,OUTPUT);
-pinMode(4,OUTPUT);
-pinMode(10,OUTPUT);
-pinMode(11,OUTPUT);
-pinMode(12,OUTPUT);
-pinMode(13,OUTPUT);
-
-
-//WHITE RIGHT
-analogWrite(3,speed);
-analogWrite(4,speed);
-
-
-//front right motors for frwD  (HLHL)VIOLET
-digitalWrite(10,LOW);
-digitalWrite(11,HIGH);
-//rear right motors for frwD  (HLHL) BLUE
-digitalWrite(12,LOW);
-digitalWrite(13,HIGH);
-  
-}
-
-int position2;
-int readline(){
-  
-int sensor1=47;//leftmost sensor
-int sensor2=48;
-int sensor3=49;
-int sensor4=50;//centre sensor
-int sensor5=51;
-int sensor6=52;
-int sensor7=53;//right most sensor
-int l3=digitalRead(sensor1);//leftmost sensor
-int l2=digitalRead(sensor2);
-int l1=digitalRead(sensor3);
-int c=digitalRead(sensor4);//centre sensor
-int r1=digitalRead(sensor5);
-int r2=digitalRead(sensor6);
-int r3=digitalRead(sensor7);//rightmost sensor
-int m =((l3*3000)+(l2*2000)+(l1*1000)+(c*0)+(r1*-1000)+(r2*-2000)+(r3*-3000))/(l3+l2+l1+c+r1+r2+r3);
-return m;
-}
 void setup() {
 
-Serial.begin(9600);
+  Serial.begin(9600);
+  pinMode(enA, OUTPUT);
+  pinMode(enB, OUTPUT);
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(in3, OUTPUT);
+  pinMode(in4, OUTPUT);
+
+
 
 }
 
-//black-----1
-//white-----0
+
+void mpower(int side, int p, int q) {
+  int Pwm1, Pwm2;
+  int A1, A2;
+  int C1, C2;
+
+
+  if (side == 1) {
+    Pwm2 = enA;
+    Pwm1 = enB;
+    A1 = in3;
+    A2 = in4;
+    C1 = in1;
+    C2 = in2;
+
+    if (p > 0) {
+      digitalWrite(A1, HIGH);
+      digitalWrite(A2, LOW);
+      analogWrite(Pwm1, p);
+    }
+    else if (p < 0) {
+      digitalWrite(A1, LOW);
+      digitalWrite(A2, HIGH);
+      analogWrite(Pwm1, -p);
+    }
+    else {
+      digitalWrite(A1, LOW);
+      digitalWrite(A2, LOW);
+      analogWrite(Pwm1, p);
+    }
+    if (q > 0) {
+      digitalWrite(C1, HIGH);
+      digitalWrite(C2, LOW);
+      analogWrite(Pwm2, q);
+    }
+    else if (q < 0) {
+      digitalWrite(C1, LOW);
+      digitalWrite(C2, HIGH);
+      analogWrite(Pwm2, -q);
+    }
+    else {
+      digitalWrite(C1, LOW);
+      digitalWrite(C2, LOW);
+      analogWrite(Pwm2, q);
+    }
+
+  }
+
+  else if (side == 2) {
+    Pwm1 = enC;
+    Pwm2 = enD;
+    A1 = in5;
+    A2 = in6;
+    C1 = in7;
+    C2 = in8;
+
+    if (p > 0) {
+      digitalWrite(A1, HIGH);
+      digitalWrite(A2, LOW);
+      analogWrite(Pwm1, p);
+    }
+    else if (p < 0) {
+      digitalWrite(A1, LOW);
+      digitalWrite(A2, HIGH);
+      analogWrite(Pwm1, -p);
+    }
+    else {
+      digitalWrite(A1, LOW);
+      digitalWrite(A2, LOW);
+      analogWrite(Pwm1, p);
+    }
+    if (q > 0) {
+      digitalWrite(C1, HIGH);
+      digitalWrite(C2, LOW);
+      analogWrite(Pwm2, q);
+    }
+    else if (q < 0) {
+      digitalWrite(C1, LOW);
+      digitalWrite(C2, HIGH);
+      analogWrite(Pwm2, -q);
+    }
+    else {
+      digitalWrite(C1, LOW);
+      digitalWrite(C2, LOW);
+      analogWrite(Pwm2, q);
+    }
+  }
+}
+
+
+
+
 
 void loop() {
-int sensor1=47;//leftmost sensor
-int sensor2=48;
-int sensor3=49;
-int sensor4=50;//centre sensor
-int sensor5=51;
-int sensor6=52;
-int sensor7=53;//right most sensor
-int l3=digitalRead(sensor1);//leftmost sensor
-int l2=digitalRead(sensor2);
-int l1=digitalRead(sensor3);
-int c=digitalRead(sensor4);//centre sensor
-int r1=digitalRead(sensor5);
-int r2=digitalRead(sensor6);
-int r3=digitalRead(sensor7);//rightmost sensor
 
-if (l3==1&l2==1&l1==0&c==0&r1==0&r2==1&r3==1){
-  forwardleft(250);
-  forwardright(250);
-  
-}
-if (l3==1&l2==0&l1==0&c==0&r1==1&r2==1&r3==1){
-  backwardleft(150);
-  forwardright(250);
-  
-}
-if (l3==1&l2==1&l1==1&c==0&r1==0&r2==0&r3==1){
-  forwardleft(250);
-  forwardright(0);
-  
-}
-if (l3==1&l2==1&l1==0&c==0&r1==1&r2==1&r3==1){
-  backwardleft(180);
-  forwardright(250);
-  
-}
-}
-//Serial.print(l3);
-//
-//Serial.print(l2);
-//
-//Serial.print(l1);
-//
-//Serial.print(c);
-//
-//Serial.print(r1);
-//
-//Serial.print(r2);
-//
-//Serial.print(r3);
-//Serial.println();
-//delay(1000);
+  int s1 = digitalRead(L1);
+  int s2 = digitalRead(L2);
+  int s3 = digitalRead(L3);
+  int s4 = digitalRead(L4);
+  int s5 = digitalRead(L5);
+  int s6 = digitalRead(L6);
+  int s7 = digitalRead(L7);
 
 
+  Serial.print(s1);
+  Serial.print("**");
+  Serial.print(s2);
+  Serial.print("**");
+  Serial.print(s3);
+  Serial.print("**");
+  Serial.print(s4);
+  Serial.print("**");
+  Serial.print(s5);
+  Serial.print("**");
+  Serial.print(s6);
+  Serial.print("**");
+  Serial.print(s7);
+  Serial.println("**");
 
-void PID(){
-  
-int power_difference;
-float kp,ki,kd;
-int derivative,proportional,integral=0,last_proportional=0;
-unsigned int position;
+  turn_error = s1 + s2 + s3 - s5 - s6 - s7;
+
+  if (s1 == 0 && s2 == 0 && s3 == 1 && s4 == 1 && s5 == 1 && s6 == 0 && s7 == 0) {
+    error = 0;
+  }
+  else if (s1 == 0 && s2 == 1 && s3 == 1 && s4 == 1 && s5 == 0 && s6 == 0 && s7 == 0) {
+    error = 1;
+  }
+  else if (s1 == 0 && s2 == 1 && s3 == 1 && s4 == 1 && s5 == 1 && s6 == 0 && s7 == 0) {
+    error = 2;
+  }
+  else if (s1 == 1 && s2 == 1 && s3 == 1 && s4 == 1 && s5 == 0 && s6 == 0 && s7 == 0) {
+    error = 3;
+  }
+  else if (s1 == 1 && s2 == 1 && s3 == 1 && s4 == 0 && s5 == 0 && s6 == 0 && s7 == 0) {
+    error = 4;
+  }
+  else if (s1 == 1 && s2 == 1 && s3 == 0 && s4 == 0 && s5 == 0 && s6 == 0 && s7 == 0) {
+    error = 5;
+  }
+  else if (s1 == 1 && s2 == 0 && s3 == 0 && s4 == 0 && s5 == 0 && s6 == 0 && s7 == 0) {
+    error = 6;
+  }
+  else if (s1 == 0 && s2 == 0 && s3 == 0 && s4 == 1 && s5 == 1 && s6 == 1 && s7 == 0) {
+    error = -1;
+  }
+  else if (s1 == 0 && s2 == 0 && s3 == 1 && s4 == 1 && s5 == 1 && s6 == 1 && s7 == 0) {
+    error = -2;
+  }
+  else if (s1 == 0 && s2 == 0 && s3 == 0 && s4 == 1 && s5 == 1 && s6 == 1 && s7 == 1) {
+    error = -3;
+  }
+  else if (s1 == 0 && s2 == 0 && s3 == 0 && s4 == 0 && s5 == 1 && s6 == 1 && s7 == 1) {
+    error = -4;
+  }
+  else if (s1 == 0 && s2 == 0 && s3 == 0 && s4 == 0 && s5 == 0 && s6 == 1 && s7 == 1) {
+    error = -5;
+  }
+  else if (s1 == 0 && s2 == 0 && s3 == 0 && s4 == 0 && s5 == 0 && s6 == 0 && s7 == 1) {
+    error = -6;
+  }
+  else if (s1 == 1 && s2 == 1 && s3 == 1 && s4 == 1 && s5 == 1 && s6 == 1 && s7 == 1) {
+    error = 7;
+  }
+  else if (s1 == 0 && s2 == 0 && s3 == 0 && s4 == 0 && s5 == 0 && s6 == 0 && s7 == 0) {
+    error = 8;
+  }
 
 
-while(1)
-{
-position=readline();
-if (position==4000){
-  forwardleft(250);
-  forwardright(250);
-}
-else{
-  Serial.println(position);
-Serial.println(power_difference);
-  kp=0.5;
-  kd=0.2;
-  ki=0.001;
-proportional=position-4000;
-derivative=proportional-last_proportional;
-integral=integral+proportional;
-last_proportional=proportional;
-power_difference=(kp*proportional)+(kd*derivative)+(ki*integral);
+  integral = error + last_error;
+  derivative = error - last_error;
+  offset_speed = Kp * error + Kd * derivative + Ki * integral;
 
-delay(1000);
-const int max=200;
-if (power_difference>max)
-{
-  power_difference=max;
-}
-if (power_difference<-max){
-  power_difference=-1*max;
-}
-if (power_difference<0)
-{
-  forwardright(max+power_difference);
-  forwardleft(max-power_difference);
-}
-else{
-  forwardright(max-power_difference);
-  forwardleft(max+power_difference);
-  
-}
+  left_speed = ref_speed - offset_speed;
+  right_speed = ref_speed + offset_speed;
+
+  left_speed = constrain(left_speed, 150, 250);
+  right_speed = constrain(right_speed, 150, 250);
+
+  if (error != 7 && error != 8) {
+    
+      mpower(1, left_speed, left_speed);
+      mpower(2, right_speed, right_speed);
+      delay(20);
+   
+  }
+  else if (error == 7 && last_error == 7) {
+    mpower(1, 0, 0);
+    mpower(2, 0, 0);
+    delay(5);
+  }
+  else if (error == 8 && last_error == 6) {
+    while (s1 == 0 && s2 == 0 && s3 == 0 && s4 == 0 && s5 == 0 && s6 == 0 && s7 == 0) {
+      mpower(1, -250, -250);
+      mpower(2, 250, 250);
+      delay(200);
+      s1 = digitalRead(L1);
+      s2 = digitalRead(L2);
+      s3 =  digitalRead(L3);
+      s4 = digitalRead(L4);
+      s5 = digitalRead(L5);
+      s6 = digitalRead(L6);
+      s7 = digitalRead(L7);
+    }
+  }
+  else if (error == 8 && last_error == -6) {
+    while (s1 == 0 && s2 == 0 && s3 == 0 && s4 == 0 && s5 == 0 && s6 == 0 && s7 == 0) {
+      mpower(1, 250, 250);
+      mpower(2, -250, -250);
+      delay(200);
+      s1 = digitalRead(L1);
+      s2 = digitalRead(L2);
+      s3 = digitalRead(L3);
+      s4 = digitalRead(L4);
+      s5 = digitalRead(L5);
+      s6 =  digitalRead(L6);
+      s7 =  digitalRead(L7);
+    }
+  }
+  else if (error == 8 && last_turn_error > 0) { // turn 90 left
+    if (last_error > 0) {
+      mpower(1, -150, -150);
+      mpower(2, -150, -150);
+      delay(20);
+      mpower(1, -250, -250);
+      mpower(2, 250, 250);
+      delay(270);
+    }
+  }
+  else if (error == 8 && last_turn_error < 0) { //turn 90 right
+    if (last_error < 0) {
+      mpower(1, -150, -150);
+      mpower(2, -150, -150);
+      delay(20);
+      mpower(1, 250, 250);
+      mpower(2, -250, -250);
+      delay(270);
+    }
+  }
+
+  last_error = error;
+  last_turn_error = turn_error;
 }
 
-}}
