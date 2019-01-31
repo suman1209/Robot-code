@@ -1,0 +1,315 @@
+//left
+//M1
+int enA = 6;
+int in1 = 22;
+int in2 = 23;
+
+//M2
+int enB = 7;
+int in3 = 25;
+int in4 = 24;
+
+//right
+//M3
+int enC = 4;
+int in5 = 27;
+int in6 = 26;
+
+//M4
+int enD = 5;
+int in7 = 29;
+int in8 = 28;
+
+int Lecho_front = 30;
+int Ltrig_front = 8;
+long Lduration_front, Lcm_front;
+
+int Lecho_back = 31;
+int Ltrig_back = 9;
+long Lduration_back, Lcm_back;
+
+int Lecho_2 = 32;
+int Ltrig_2 = 10;
+long Lduration_2, Lcm_2;
+
+int Lecho_1 = 33;
+int Ltrig_1 = 11;
+long Lduration_1, Lcm_1;
+
+long exact_Lcm_front;
+
+
+long Lfront_error, Lback_error;
+
+
+long ref_distance = 20;
+
+
+long Lerror;
+int while_error;
+long Llast_error;
+
+int turn_error;
+int last_turn_error;
+
+int integral;
+int derivative;
+
+
+int Kp = 20;
+int Kd = 0;
+int Ki = 0;
+        
+
+
+int ref_speed = 200;
+int offset_speed;
+
+int max_speed;
+int min_speed;
+
+int left_speed;
+int right_speed;
+
+
+
+void setup() {
+  Serial.begin(9600);
+
+  pinMode(enA, OUTPUT);
+  pinMode(enB, OUTPUT);
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(in3, OUTPUT);
+  pinMode(in4, OUTPUT);
+
+
+  pinMode(Ltrig_front, OUTPUT);
+  pinMode(Lecho_front, INPUT);
+
+  pinMode(Ltrig_back, OUTPUT);
+  pinMode(Lecho_back, INPUT);
+
+  pinMode(Ltrig_1, OUTPUT);
+  pinMode(Lecho_1, INPUT);
+
+  pinMode(Ltrig_2, OUTPUT);
+  pinMode(Lecho_2, INPUT);
+
+
+  digitalWrite(Ltrig_front, LOW);
+  delayMicroseconds(5);
+
+
+  digitalWrite(Ltrig_back, LOW);
+  delayMicroseconds(5);
+
+  digitalWrite(Ltrig_1, LOW);
+  delayMicroseconds(5);
+
+
+  digitalWrite(Ltrig_2, LOW);
+  delayMicroseconds(5);
+
+
+}
+
+
+void mpower(int side, int p, int q) {
+  int Pwm1, Pwm2;
+  int A1, A2;
+  int C1, C2;
+
+
+  if (side == 1) {
+    Pwm2 = enA;
+    Pwm1 = enB;
+    A1 = in3;
+    A2 = in4;
+    C1 = in1;
+    C2 = in2;
+
+    if (p > 0) {
+      digitalWrite(A1, HIGH);
+      digitalWrite(A2, LOW);
+      analogWrite(Pwm1, p);
+    }
+    else if (p < 0) {
+      digitalWrite(A1, LOW);
+      digitalWrite(A2, HIGH);
+      analogWrite(Pwm1, -p);
+    }
+    else {
+      digitalWrite(A1, LOW);
+      digitalWrite(A2, LOW);
+      analogWrite(Pwm1, p);
+    }
+    if (q > 0) {
+      digitalWrite(C1, HIGH);
+      digitalWrite(C2, LOW);
+      analogWrite(Pwm2, q);
+    }
+    else if (q < 0) {
+      digitalWrite(C1, LOW);
+      digitalWrite(C2, HIGH);
+      analogWrite(Pwm2, -q);
+    }
+    else {
+      digitalWrite(C1, LOW);
+      digitalWrite(C2, LOW);
+      analogWrite(Pwm2, q);
+    }
+
+  }
+
+  else if (side == 2) {
+    Pwm1 = enC;
+    Pwm2 = enD;
+    A1 = in5;
+    A2 = in6;
+    C1 = in7;
+    C2 = in8;
+
+    if (p > 0) {
+      digitalWrite(A1, HIGH);
+      digitalWrite(A2, LOW);
+      analogWrite(Pwm1, p);
+    }
+    else if (p < 0) {
+      digitalWrite(A1, LOW);
+      digitalWrite(A2, HIGH);
+      analogWrite(Pwm1, -p);
+    }
+    else {
+      digitalWrite(A1, LOW);
+      digitalWrite(A2, LOW);
+      analogWrite(Pwm1, p);
+    }
+    if (q > 0) {
+      digitalWrite(C1, HIGH);
+      digitalWrite(C2, LOW);
+      analogWrite(Pwm2, q);
+    }
+    else if (q < 0) {
+      digitalWrite(C1, LOW);
+      digitalWrite(C2, HIGH);
+      analogWrite(Pwm2, -q);
+    }
+    else {
+      digitalWrite(C1, LOW);
+      digitalWrite(C2, LOW);
+      analogWrite(Pwm2, q);
+    }
+  }
+}
+
+
+
+void loop() {
+  digitalWrite(Ltrig_front, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(Ltrig_front, LOW);
+
+  Lduration_front = pulseIn(Lecho_front, HIGH);
+  Lcm_front = (Lduration_front / 2) / 29.1;
+ 
+
+  digitalWrite(Ltrig_back, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(Ltrig_back, LOW);
+
+  Lduration_back = pulseIn(Lecho_back, HIGH);
+  Lcm_back = (Lduration_back / 2) / 29.1;
+
+  Serial.print("Lcm_front= ");
+  Serial.print(Lcm_front);
+  Serial.print("   ***   ");
+
+  Serial.print("Lcm_back= ");
+  Serial.print(Lcm_back);
+  Serial.print("   ***   ");
+
+  digitalWrite(Ltrig_1, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(Ltrig_1, LOW);
+
+  Lduration_1 = pulseIn(Lecho_1, HIGH);
+  Lcm_1 = (Lduration_1 / 2) / 29.1;
+
+
+  digitalWrite(Ltrig_2, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(Ltrig_2, LOW);
+
+  Lduration_2 = pulseIn(Lecho_2, HIGH);
+  Lcm_2 = (Lduration_2 / 2) / 29.1;
+
+  Serial.print("Lcm_1 = ");
+  Serial.print(Lcm_1);
+  Serial.print("   ***   ");
+
+  Serial.print("Lcm_2 = ");
+  Serial.println(Lcm_2);
+
+  if(Lcm_front<40){exact_Lcm_front = Lcm_front; }
+  else if(Lcm_1<40){exact_Lcm_front = Lcm_1; }
+  else if(Lcm_2<40){exact_Lcm_front = Lcm_2; }
+ 
+
+  Lfront_error = ref_distance - exact_Lcm_front;
+  Lback_error = ref_distance - Lcm_back;
+
+  Lerror = exact_Lcm_front - Lcm_back;
+  derivative = Lerror - Llast_error;
+  integral = Lerror + Llast_error;
+  offset_speed = Kp * Lerror + Kd * derivative + Ki * integral;
+
+  left_speed = ref_speed - offset_speed;
+  right_speed = ref_speed + offset_speed;
+
+  left_speed = constrain(left_speed, 150, 250);
+  right_speed = constrain(right_speed, 150, 250);
+
+  if (exact_Lcm_front < 40) {
+    if ((Lfront_error <= 3) && (Lfront_error >= -3))
+    {
+      mpower(1, left_speed, left_speed);
+      mpower(2, right_speed, right_speed);
+      delay(20);
+
+    }
+
+    else if (Lfront_error > 3) {
+      if (((Lfront_error >= 2) || (Lfront_error <= -2)) && ((Lback_error < 4) || (Lback_error > -4))) {
+
+
+        mpower(1, 250, 250);
+        mpower(2, -250, -250);
+        delay(5);
+      }
+    }
+
+    else if (Lfront_error < -3) {
+      if (((Lfront_error >= 2) || (Lfront_error <= -2)) && ((Lback_error < 4) || (Lback_error > -4))) {
+
+
+        mpower(1, -250, -250);
+        mpower(2, 250, 250);
+        delay(5);
+      }
+    }
+  }
+  else {
+
+    mpower(1, 0, 0);
+    mpower(2, 0, 0);
+    Serial.println("stop");
+    delay(10);
+  }
+
+
+
+
+
+  Llast_error = Lerror;
+}
